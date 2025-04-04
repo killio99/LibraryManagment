@@ -17,7 +17,7 @@ public class Library{
     //mass entry of books and users in construcotr
     public Library(){
         //Mass Entry of Books
-         try (BufferedReader br = new BufferedReader(new FileReader(booksList.txt))) {
+         try (BufferedReader br = new BufferedReader(new FileReader("booksList.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 //create a book
@@ -25,7 +25,7 @@ public class Library{
                 //file format
                 //ISBN,Author,Title,Num
                 int indISBN = line.indexOf(",",0);
-                String ISBN = line.substring(0,indISBN);
+                int ISBN = Integer.parseInt(line.substring(0,indISBN));
                 
                 int indAuthor = line.indexOf(",", indISBN+1);
                 String Author = line.substring(indISBN+1, indAuthor);
@@ -33,8 +33,7 @@ public class Library{
                 int indTitle = line.indexOf(",", indAuthor+1);
                 String Title = line.substring(indAuthor+1, indTitle);
 
-                int indNumCopies = line.indexOf(",", indTitle+1);
-                String NumCopies = line.substring(indTitle+1, indNumCopies);
+                int NumCopies = Integer.parseInt(line.substring(indTitle+1));
                 
                 books.add(new Book(ISBN, Author, Title, NumCopies));
             }
@@ -43,7 +42,7 @@ public class Library{
         }
 
         //Mass Entry of Users
-        try (BufferedReader br2 = new BufferedReader(new FileReader(userList.txt))) {
+        try (BufferedReader br2 = new BufferedReader(new FileReader("userList.txt"))) {
             String line;
             while ((line = br2.readLine()) != null) {
                 //create a user object
@@ -53,8 +52,7 @@ public class Library{
                 int indPassword = line.indexOf(",", indUsername+1);
                 String pass = line.substring(indUsername+1, indPassword);
 
-                int indFines = line.indexOf(",", indPassword+1);
-                double fines = Double.parseDouble(line.substring(indPassword+1, indFines));
+                double fines = Double.parseDouble(line.substring(indPassword+1));
                 users.add(new User(user, pass, fines));
                 
             }
@@ -75,4 +73,11 @@ public class Library{
 
     public int getMaxCheckouts(){ return MAX_CHECKOUTS;}
     
+    public String getBookList(){
+        String rtn = "";
+        for (int i = 0; i < books.size(); i++) {
+            rtn += books.get(i).getTitle() + "\n";
+        }
+        return rtn;
+    }
 }

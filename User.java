@@ -9,7 +9,7 @@ public class User{
     private ArrayList<Book> reservedBooks = new ArrayList<Book>();
 
     //for mass import
-    public User(String u, String p, double fines){
+    public User(String u, String p, double f){
         username = u;
         password = p;
         fines = f;
@@ -21,6 +21,7 @@ public class User{
         fines = 0;
     }
 
+    /* 
     public void checkout(Book b){
         if (fines == 0){
             if (borrowedBooks.size() < getMaxCheckouts()){
@@ -34,4 +35,5 @@ public class User{
             //display "overdue books with swing/javaFX"
         }
     }
+    */
 }
