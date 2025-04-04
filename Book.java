@@ -2,14 +2,14 @@ public class Book{
     private int id;
     private String author;
     private String title;
-    private int num;
+    private int copies;
 
     //Constructor
-    public Book(int id, String author, String title, int num){
+    public Book(int id, String author, String title, int copies){
         this.id = id;
         this.author = author;
         this.title = title;
-        this.num = num;
+        this.copies = copies;
     }
 
     //Setters
@@ -25,8 +25,8 @@ public class Book{
         this.title = title;
     }
 
-    public void setAvailable(int num){
-        this.num = num;
+    public void setAvailable(int copies){
+        this.copies = copies;
     }
 
     //getters    
@@ -43,15 +43,15 @@ public class Book{
     }
 
     public boolean borrowBook(){
-        if(num > 0){
-            num --;
+        if(copies > 0){
+            copies --;
             return true;
         }
         return false;
     }
 
     public void returnBook(){
-        num++;
+        copies++;
     }
 
 }
