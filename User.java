@@ -8,6 +8,13 @@ public class User{
     private ArrayList<Book> borrowedBooks = new ArrayList<Book>();
     private ArrayList<Book> reservedBooks = new ArrayList<Book>();
 
+    //for mass import
+    public User(String u, String p, double fines){
+        username = u;
+        password = p;
+        fines = f;
+    }
+    //for new user
     public User(String u, String p){
         username = u;
         password = p;
