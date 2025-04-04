@@ -3,6 +3,6 @@ public class libraryMan{
         Library messiahLibrary = new Library();
 
         
-        System.out.println(messiahLibrary.getBookList());
+        System.out.println(messiahLibrary.getBookListTitles());
     }
 }
