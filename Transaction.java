@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class Transaction {
     private int userId;
@@ -11,5 +12,18 @@ public class Transaction {
         this.bookId = bookId;
         this.borrowDate = borrowDate;
         this.returnDate = null;
+    }
+    //Will be called when the book is returned
+    public void returnBook(LocalDate returnDate){
+        this.returnDate = returnDate;
+    }
+
+    //Checks if the book is overdue more than 14 days late 
+    public boolean overdue(){
+        if(returnDate != null){
+            long daysBetween = ChronoUnit.DAYS.between(borrowDate, returnDate);
+            return daysBetween > 14;
+        }
+        return false;
     }
 }
