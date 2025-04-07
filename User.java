@@ -15,16 +15,29 @@ public class User{
     }
 
     public void checkout(Book b){
-        if (fines == 0){
-            if (borrowedBooks.size() < getMaxCheckouts()){
-                //if ()
-            }
-            else{
-                //display "too many checkouts"
-            }
+        if (fines > 0){
+            System.out.println("You have overdue fines. Please pay them before borrowing books.");
         }
-        else{
-            //display "overdue books with swing/javaFX"
+        if (borrowedBooks.size() >= getMaxCheckouts()){
+            System.out.println("You have reached the maximum number of checkouts.");
+            
+            }
+        if (b.borrowBook()){
+            borrowedBooks.add(b);
+            System.out.println("Check out: " + b.getTitle());
+        }else {
+            System.out.println("Book is currently unavailable.");
         }
     }
+
+    public void returnBook(Book b){
+        if (borrowedBooks.contains(b)){
+            borrowedBooks.remove(b);
+            b.returnBook();
+            System.out.println("Returned: " + b.getTitle());
+        }else{
+            System.out.println("This book was not borrowed by the user.");
+        }
+    }
+
 }
