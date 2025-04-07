@@ -73,7 +73,7 @@ public class Library{
 
     public int getMaxCheckouts(){ return MAX_CHECKOUTS;}
     
-    public String getBookList(){
+    public String getBookListTitles(){
         String rtn = "";
         for (int i = 0; i < books.size(); i++) {
             rtn += books.get(i).getTitle() + "\n";
