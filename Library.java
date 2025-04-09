@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;  // Import the IOException class to handle errors
 
 public class Library{
-    private final int MAX_CHECKOUTS = 3;
+    private static final int MAX_CHECKOUTS = 3;
     //all the books
     //dont add or remove on a checkout, just change the num 
     //available in the book object
@@ -69,9 +69,15 @@ public class Library{
             System.err.println("An error occurred writing to the file: " + e.getMessage());
         }
             */
+        
+
+
+
     };
 
-    public int getMaxCheckouts(){ return MAX_CHECKOUTS;}
+    public static int getMaxCheckouts(){ 
+        return MAX_CHECKOUTS;
+    }
     
     public String getBookListTitles(){
         String rtn = "";
@@ -80,4 +86,7 @@ public class Library{
         }
         return rtn;
     }
+
+
+
 }
