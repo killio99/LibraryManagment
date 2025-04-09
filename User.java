@@ -26,16 +26,17 @@ public class User{
         if (fines > 0){
             System.out.println("You have overdue fines. Please pay them before borrowing books.");
         }
-        if (borrowedBooks.size() >= getMaxCheckouts()){
+        if (borrowedBooks.size() >= Library.getMaxCheckouts()){
             System.out.println("You have reached the maximum number of checkouts.");
             
-            }
+        }
         if (b.borrowBook()){
             borrowedBooks.add(b);
             System.out.println("Check out: " + b.getTitle());
         }else {
             System.out.println("Book is currently unavailable.");
         }
+
     }
 
     public void returnBook(Book b){
