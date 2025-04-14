@@ -5,6 +5,11 @@ public class User{
     private String password;
     private double fines;
 
+    //TRY TO FIND A MORE SECURE WAY?
+    //ex, index 1 in both refers to the same user
+    private static ArrayList<String> allUsernames = new ArrayList<String>();
+    private static ArrayList<String> allPasswords = new ArrayList<String>();
+
     private ArrayList<Book> borrowedBooks = new ArrayList<Book>();
     private ArrayList<Book> reservedBooks = new ArrayList<Book>();
 
@@ -13,12 +18,17 @@ public class User{
         username = u;
         password = p;
         fines = f;
+        allUsernames.add(u);
+        allPasswords.add(p);
     }
+
     //for new user
     public User(String u, String p){
         username = u;
         password = p;
         fines = 0;
+        allUsernames.add(u);
+        allPasswords.add(p);
     }
 
 
@@ -90,5 +100,13 @@ public class User{
     //set fines
     public void setFines(double amount){
         fines = amount;
+    }
+
+    public static ArrayList<String> getAllUsers(){
+        return allUsernames;
+    }
+
+    public static ArrayList<String> getAllPasswords(){
+        return allPasswords;
     }
 }
