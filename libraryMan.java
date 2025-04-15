@@ -43,18 +43,17 @@ public class libraryMan{
                 }
             }
 
-            else if(userLogin.toLowerCase().equals("admin"));
+            else if(userLogin.toLowerCase().equals("admin")){
                 //library admin
                 if (userPass.equals(adminPassword)){
                     adminLoggedIn = true;
                     logInLoop = false;
                 }
-                
+            } 
             else{
             
                 System.out.println("No User found");
             }
-        }
         //continues here
         System.out.println();
         //User controls
