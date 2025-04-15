@@ -87,6 +87,13 @@ public class Library{
         return rtn;
     }
 
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
+    public void addUser(User user){
+        users.add(user);
+    }
 
 
 }
