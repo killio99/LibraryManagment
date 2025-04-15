@@ -5,7 +5,7 @@ public class libraryMan{
         Scanner scanner = new Scanner(System.in);
 
         Library messiahLibrary = new Library();
-        User curUser;
+        User curUser = null;
 
         boolean logInLoop = true;
         String adminPassword = "admin";
@@ -33,9 +33,15 @@ public class libraryMan{
 
             if (User.getAllUsers().indexOf(userLogin) != -1){
                 if (User.getAllPasswords().indexOf(userPass) != -1){
-                    //this user exists
+                      //this user exists
                     //login in the user somehow
                     //curUser = 
+                    for(User u : messiahLibrary.getUsers()){
+                        if(u.getUsername().equals(userLogin)){
+                            curUser = u;
+                            break;
+                        }
+                    }
                     logInLoop = false;
                 }
                 else{
@@ -48,12 +54,15 @@ public class libraryMan{
                 if (userPass.equals(adminPassword)){
                     adminLoggedIn = true;
                     logInLoop = false;
+                }else{
+                    System.out.println("Incorrect Admin Password");
                 }
             } 
             else{
             
                 System.out.println("No User found");
             }
+        }
         //continues here
         System.out.println();
         //User controls
