@@ -6,7 +6,7 @@ public class libraryMan{
 
         Library messiahLibrary = new Library();
         User curUser = null;
-
+        
         boolean logInLoop = true;
         String adminPassword = "admin";
         boolean adminLoggedIn = false;
@@ -19,7 +19,7 @@ public class libraryMan{
             String ynCreate = scanner.nextLine();
             if (ynCreate.equals("Y")){
                 //create user
-                
+                 
                 //add to database
                 //login in user
                 //continue code logged in
