@@ -95,5 +95,9 @@ public class Library{
         users.add(user);
     }
 
+    //testing
+    public void addBook(Book b){
+        books.add(b);
+    }
 
 }

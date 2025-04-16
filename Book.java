@@ -42,6 +42,10 @@ public class Book{
         return title;
     }
 
+    public int getCopiesAvailable(){
+        return copies;
+    }
+
     public boolean borrowBook(){
         if(copies > 0){
             copies --;
@@ -52,6 +56,10 @@ public class Book{
 
     public void returnBook(){
         copies++;
+    }
+
+    public boolean isAvailable(){
+        return copies > 0;
     }
 
 }

@@ -32,19 +32,22 @@ public class User{
     }
 
 
-    public void checkout(Book b){
+    public boolean checkout(Book b){
         if (fines > 0){
             System.out.println("You have overdue fines. Please pay them before borrowing books.");
+            return false;
         }
         if (borrowedBooks.size() >= Library.getMaxCheckouts()){
             System.out.println("You have reached the maximum number of checkouts.");
-            
+            return false;
         }
         if (b.borrowBook()){
             borrowedBooks.add(b);
             System.out.println("Check out: " + b.getTitle());
+            return true;
         }else {
             System.out.println("Book is currently unavailable.");
+            return false;
         }
 
     }
