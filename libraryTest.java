@@ -4,12 +4,14 @@ public class libraryTest {
 
         User user = new User("john", "pass");
         lib.addUser(user);
-        Book book = new Book(999, "Tester", "Test Book", 1);
+        Book book = new Book(999, "Tester", "Test Book", 3);
         lib.addBook(book);
 
         System.out.println("Checking out book...");
         boolean result = user.checkout(book);
         System.out.println("Success? " + result);
+
+        System.out.println("Books now: " + book.getCopiesAvailable());
 
         System.out.println("Returning book...");
         user.returnBook(book);

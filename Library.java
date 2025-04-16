@@ -34,7 +34,7 @@ public class Library{
                 String Title = line.substring(indAuthor+1, indTitle);
 
                 int NumCopies = Integer.parseInt(line.substring(indTitle+1));
-                
+                System.out.println(ISBN + Author + Title + NumCopies);
                 books.add(new Book(ISBN, Author, Title, NumCopies));
             }
         } catch (IOException e) {

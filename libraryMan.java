@@ -19,6 +19,7 @@ public class libraryMan{
             String ynCreate = scanner.nextLine();
             if (ynCreate.equals("Y")){
                 //create user
+                
                 //add to database
                 //login in user
                 //continue code logged in
@@ -82,6 +83,7 @@ public class libraryMan{
             //would take in a user for some
             System.out.println("1. View user transactions");
             System.out.println("2. Pay user fines");
+            System.out.println("3. Add new book to system");
             int choice = scanner.nextInt();
 
             
