@@ -20,6 +20,8 @@ public class SchemaSetup {
                 username TEXT UNIQUE,
                 password TEXT NOT NULL,
                 fines REAL DEFAULT 0.0
+                borrowed_books TEXT DEFAULT '' -- Comma-separated list of borrowed book titles
+
             );
         """;
 

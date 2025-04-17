@@ -87,9 +87,19 @@ public class libraryMan{
             System.out.println("6. Logout");
             int choice = scanner.nextInt();
 
-            /* 
-            Switch (choice){
-                //case 1:
+            
+            switch (choice){
+                case 1:
+                    System.out.println("Enter book title to checkout: ");
+                    scanner.nextLine();
+                    String bookTitle = scanner.nextLine();
+                    Book book = Book.getBookFromDB(bookTitle);
+                    if (book == null){
+                        System.out.println("Book not found in system.");
+                        break;
+                    }
+                    curUser.checkout(book);
+                    System.out.println("You have checked out " + book.getTitle() + " by " + book.getAuthor());
                     //checkout book
                 case 2:
                     //return book
@@ -102,9 +112,11 @@ public class libraryMan{
                 case 5:
                     //lookup book details
                     break;
-                */
+                
+                
         }
         
         scanner.close();
     }
+}
 }

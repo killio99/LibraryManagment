@@ -5,7 +5,8 @@ public class libraryTest {
         //t.saveToDB();
         //System.out.println(Transaction.listTransactions());
 
-
+        Book book = new Book(1, "Author A", "Book A", 5);
+        book.saveNewToDB();
 
         //This code works
         /*

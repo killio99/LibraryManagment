@@ -134,6 +134,35 @@ public class Book{
             e.printStackTrace();
         }
     }
+    
+    public static Book getBookFromDB(String title) {
+        String sql = "SELECT * FROM Books WHERE title = ?";
+        Book book = null;
+
+        try (Connection conn = DBHelper.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, title);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                book = new Book(
+                    rs.getInt("id"),
+                    rs.getString("author"),
+                    rs.getString("title"),
+                    rs.getInt("available_copies")
+                );
+            } else {
+                System.out.println("Book not found: " + title);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Failed to retrieve book from database:");
+            e.printStackTrace();
+        }
+        return book;
+    }
+
     public static List<Book> getAllBooks() {
         List<Book> books = new ArrayList<>();
         String sql = "SELECT * FROM Books";

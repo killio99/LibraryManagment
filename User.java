@@ -3,26 +3,31 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+
 public class User{
     private String username;
     private String password;
     private double fines;
+    private ArrayList<String> borrowedBookTitles = new ArrayList<>();
+    private int booksBorrowed;
 
-    private ArrayList<Book> borrowedBooks = new ArrayList<Book>();
-    private ArrayList<Book> reservedBooks = new ArrayList<Book>();
+    //private ArrayList<Book> reservedBooks = new ArrayList<Book>();
 
-    //for mass import
-    public User(String u, String p, double f){
-        username = u;
-        password = p;
-        fines = f;
-    }
+
 
     //for new user
     public User(String u, String p){
         username = u;
         password = p;
         fines = 0;
+        booksBorrowed = 0;
+    }
+
+    public User(String u, String p, double f){
+        username = u;
+        password = p;
+        fines = f;
+        booksBorrowed = 0;
     }
 
     public void saveNewToDB() {
@@ -76,6 +81,32 @@ public class User{
         }
     }
 
+    public void updateBorrowedBooksInDB(){
+        String sql = "UPDATE Users SET borrowed_books = ? WHERE username = ?";
+
+        try (Connection conn = DBHelper.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            StringBuilder sb = new StringBuilder();
+            for (String title : borrowedBookTitles) {
+                sb.append(title).append(",");
+            }
+            // Remove the last comma
+            if (sb.length() > 0) {
+                sb.setLength(sb.length() - 1);
+            }
+
+            pstmt.setString(1, sb.toString());
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+
+            System.out.println("User borrowed books updated in database: " + username);
+
+        } catch (Exception e) {
+            System.out.println("Failed to update user borrowed books:");
+            e.printStackTrace();
+        }
+    }
     public void removeUserInDB(){
         String sql = "DELETE FROM Users WHERE username = ?";
 
@@ -118,7 +149,6 @@ public class User{
 
         return sb.toString();
     }
-
 
     public static boolean containsUserInDB(String username){
         String sql = "SELECT * FROM Users WHERE username = ?";
@@ -193,24 +223,46 @@ public class User{
     }
     
     public boolean checkout(Book b){
+        //if the user has overdue fines
         if (fines > 0){
             System.out.println("You have overdue fines. Please pay them before borrowing books.");
             return false;
         }
-        if (borrowedBooks.size() >= Library.getMaxCheckouts()){
+        //if the user already has too many books borrowed
+        if (booksBorrowed >= Library.getMaxCheckouts()){
             System.out.println("You have reached the maximum number of checkouts.");
             return false;
         }
-        if (b.borrowBook()){
-            borrowedBooks.add(b);
-            System.out.println("Check out: " + b.getTitle());
-            return true;
-        }else {
-            System.out.println("Book is currently unavailable.");
+        //if its already borrowed by the user
+        if (borrowedBookTitles.contains(b.getTitle())) {
+            System.out.println("Book is already borrowed: " + b.getTitle());
             return false;
         }
+        //if the book has copies available
+        if (!b.isAvailable()){
+            System.out.println("No copies available for checkout: " + b.getTitle());
+            return false;
+        }
+        
+        //checking out the book
+        b.borrowBook(); //update book copies
+        b.updateCopiesInDB(); //update book in database
+
+
+        borrowedBookTitles.add(b.getTitle());
+        updateBorrowedBooksInDB(); //adds the book title to the user string of books
+        
+        booksBorrowed++; //increment books borrowed
+
+
+        Transaction t = new Transaction(username, b.getTitle(), "checkout");
+        t.saveToDB(); //save transaction to database
+
+        System.out.println("Checked out: " + b.getTitle());
+        return true; //successful checkout
 
     }
+
 
     public void returnBook(Book b){
         if (borrowedBooks.contains(b)){
@@ -250,14 +302,6 @@ public class User{
 
     public double getFines(){
         return fines;
-    }
-
-    public ArrayList<Book> getBorrowedBooks(){
-        return borrowedBooks;
-    }
-
-    public ArrayList<Book> getReservedBooks(){
-        return reservedBooks;
     }
 
     //set fines
