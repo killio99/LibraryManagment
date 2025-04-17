@@ -1,9 +1,11 @@
 public class libraryTest {
     public static void main(String[] args) {
 
-        Transaction t = new Transaction("testuser1", "Book A", "return");
-        t.saveToDB();
-        System.out.println(Transaction.listTransactions());
+        //Transaction t = new Transaction("testuser1", "Book A", "return");
+        //t.saveToDB();
+        //System.out.println(Transaction.listTransactions());
+
+
 
         //This code works
         /*
