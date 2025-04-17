@@ -1,14 +1,12 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class User{
     private String username;
     private String password;
     private double fines;
-
-    //TRY TO FIND A MORE SECURE WAY?
-    //ex, index 1 in both refers to the same user
-    private static ArrayList<String> allUsernames = new ArrayList<String>();
-    private static ArrayList<String> allPasswords = new ArrayList<String>();
 
     private ArrayList<Book> borrowedBooks = new ArrayList<Book>();
     private ArrayList<Book> reservedBooks = new ArrayList<Book>();
@@ -18,8 +16,6 @@ public class User{
         username = u;
         password = p;
         fines = f;
-        allUsernames.add(u);
-        allPasswords.add(p);
     }
 
     //for new user
@@ -27,8 +23,99 @@ public class User{
         username = u;
         password = p;
         fines = 0;
-        allUsernames.add(u);
-        allPasswords.add(p);
+    }
+
+    public void saveToDB() {
+        String checkUserSql = "SELECT COUNT(*) FROM Users WHERE username = ?";
+        String insertUserSql = "INSERT INTO Users (username, password, fines) VALUES (?, ?, ?)";
+    
+        try (Connection conn = DBHelper.connect();
+             PreparedStatement checkStmt = conn.prepareStatement(checkUserSql);
+             PreparedStatement insertStmt = conn.prepareStatement(insertUserSql)) {
+
+            // Check if the username already exists
+            checkStmt.setString(1, username);
+            ResultSet rs = checkStmt.executeQuery();
+            rs.next(); // Move to the first row of the result set
+            int count = rs.getInt(1);
+    
+            if (count > 0) {
+                System.out.println("User already exists in the database: " + username);
+                return; // Exit the method without inserting
+            }
+    
+            // Insert the user if they do not exist
+            insertStmt.setString(1, username);
+            insertStmt.setString(2, password);
+            insertStmt.setDouble(3, fines);
+            insertStmt.executeUpdate();
+    
+            System.out.println("User saved to database: " + username);
+    
+        } catch (Exception e) {
+            System.out.println("Failed to save user:");
+            e.printStackTrace();
+        }
+    }
+
+    public void updateFinesInDB(){
+        String sql = "UPDATE Users SET fines = ? WHERE username = ?";
+
+        try (Connection conn = DBHelper.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setDouble(1, fines);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+
+            System.out.println("User fines updated in database: " + username);
+
+        } catch (Exception e) {
+            System.out.println("Failed to update user fines:");
+            e.printStackTrace();
+        }
+    }
+
+    public void removeUserInDB(){
+        String sql = "DELETE FROM Users WHERE username = ?";
+
+        try (Connection conn = DBHelper.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            pstmt.executeUpdate();
+
+            System.out.println("User removed from database: " + username);
+
+        } catch (Exception e) {
+            System.out.println("Failed to remove user from database:");
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<User> getAllUsersFromDB() {
+        ArrayList<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM Users";
+
+        try (Connection conn = DBHelper.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                String username = rs.getString("name");
+                String password = rs.getString("email"); // Replace with hashed password for security
+                double fines = rs.getDouble("fines");
+
+                User user = new User(username, password, fines);
+                users.add(user);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Failed to retrieve users from database:");
+            e.printStackTrace();
+        }
+
+        return users;
     }
 
 
@@ -103,13 +190,5 @@ public class User{
     //set fines
     public void setFines(double amount){
         fines = amount;
-    }
-
-    public static ArrayList<String> getAllUsers(){
-        return allUsernames;
-    }
-
-    public static ArrayList<String> getAllPasswords(){
-        return allPasswords;
     }
 }

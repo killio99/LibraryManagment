@@ -67,26 +67,73 @@ public class Book{
         return copies > 0;
     }
 
-    public void saveToDB() {
-        String sql = "INSERT INTO Books (id, author, title, available_copies) VALUES (?, ?, ?, ?)";
-
+    public void saveNewToDB() {
+        String checkBookSql = "SELECT COUNT(*) FROM Books WHERE isbn = ?";
+        String insertBookSql = "INSERT INTO Books (isbn, author, title, available_copies) VALUES (?, ?, ?, ?)";
+    
         try (Connection conn = DBHelper.connect();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, id);
-            pstmt.setString(2, author);
-            pstmt.setString(3, title);
-            pstmt.setInt(4, copies);
-            pstmt.executeUpdate();
-
-            System.out.println("✅ Book saved to database: " + title);
-
+             PreparedStatement checkStmt = conn.prepareStatement(checkBookSql);
+             PreparedStatement insertStmt = conn.prepareStatement(insertBookSql)) {
+    
+            // Check if the book already exists
+            checkStmt.setInt(1, id);
+            ResultSet rs = checkStmt.executeQuery();
+            rs.next(); // Move to the first row of the result set
+            int count = rs.getInt(1);
+    
+            if (count > 0) {
+                System.out.println("Book already exists in the database: " + title);
+            } else {
+                // Insert the new book
+                insertStmt.setInt(1, id);
+                insertStmt.setString(2, author);
+                insertStmt.setString(3, title);
+                insertStmt.setInt(4, copies);
+                insertStmt.executeUpdate();
+                System.out.println("Book saved to database: " + title);
+            }
+    
         } catch (Exception e) {
-            System.out.println("❌ Failed to save book:");
+            System.out.println("Failed to save book:");
             e.printStackTrace();
         }
-    }  
+    }
+    //update copies in databse
+    public void updateCopiesInDB() {
+
+        String sql = "UPDATE Books SET available_copies = ? WHERE isbn = ?";
     
+        try (Connection conn = DBHelper.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setInt(1, copies);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+    
+            System.out.println("Book copies updated in database: " + title);
+    
+        } catch (Exception e) {
+            System.out.println("Failed to update book copies:");
+            e.printStackTrace();
+        }
+    }
+    
+    public void removeFromDB(){
+        String sql = "DELETE FROM Books WHERE isbn = ?";
+    
+        try (Connection conn = DBHelper.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+    
+            System.out.println("Book removed from database: " + title);
+    
+        } catch (Exception e) {
+            System.out.println("Failed to remove book from database:");
+            e.printStackTrace();
+        }
+    }
     public static List<Book> getAllBooks() {
         List<Book> books = new ArrayList<>();
         String sql = "SELECT * FROM Books";
@@ -110,23 +157,6 @@ public class Book{
             e.printStackTrace();
         }
         return books;
-    }
-    public void updateCopiesInDB() {
-        String sql = "UPDATE Books SET available_copies = ? WHERE id = ?";
-
-        try (Connection conn = DBHelper.connect();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, copies);
-            pstmt.setInt(2, id);
-            pstmt.executeUpdate();
-
-            System.out.println("🔄 Updated book copies in DB: " + title);
-
-        } catch (Exception e) {
-            System.out.println("❌ Failed to update copies:");
-            e.printStackTrace();
-        }
     }
 
 

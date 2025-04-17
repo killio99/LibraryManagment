@@ -1,2 +1,0 @@
-should transaction history be in the user or library level?
-I think library since it will be eaier to show which copy the user has.

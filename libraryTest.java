@@ -1,5 +1,29 @@
 public class libraryTest {
     public static void main(String[] args) {
+        User testuser = new User("testuser1", "password123");
+        //testuser.saveToDB();
+        testuser.setFines(10.0);
+        testuser.updateFinesInDB();
+
+        testuser.payFines(5);
+        testuser.updateFinesInDB();
+        testuser.removeUserInDB();
+        //This code works
+
+        /*
+        Book book1 = new Book(1, "Author A", "Book A", 1);
+        book1.saveNewToDB();
+        book1.setAvailable(5);
+        book1.updateCopiesInDB();
+        book1.removeFromDB();
+        */
+
+
+        
+        
+
+
+        /* 
         Library lib = new Library();
 
         User user = new User("john", "pass");
@@ -16,5 +40,6 @@ public class libraryTest {
         System.out.println("Returning book...");
         user.returnBook(book);
         System.out.println("Returned. Available: " + book.getCopiesAvailable());
-    }   
+        */
+        }   
 }

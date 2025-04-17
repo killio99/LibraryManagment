@@ -32,24 +32,17 @@ public class libraryMan{
             System.out.print("Password: ");
             String userPass = scanner.nextLine();
 
-            if (User.getAllUsers().indexOf(userLogin) != -1){
-                if (User.getAllPasswords().indexOf(userPass) != -1){
-                      //this user exists
+            //if (username exists in database){
+                //if (password matches the username){
+                    //this user exists
                     //login in the user somehow
                     //curUser = 
-                    for(User u : messiahLibrary.getUsers()){
-                        if(u.getUsername().equals(userLogin)){
-                            curUser = u;
-                            break;
-                        }
-                    }
                     logInLoop = false;
                 }
                 else{
                     System.out.println("Incorrect Password");
                 }
             }
-
             else if(userLogin.toLowerCase().equals("admin")){
                 //library admin
                 if (userPass.equals(adminPassword)){
