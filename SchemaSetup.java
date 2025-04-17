@@ -27,8 +27,8 @@ public class SchemaSetup {
             CREATE TABLE IF NOT EXISTS Transactions (
                 username TEXT,
                 title TEXT,
-                borrow_date TEXT,
-                return_date TEXT
+                status TEXT CHECK(status IN ('checkout', 'return')),
+                date DATE
             );
         """;
 

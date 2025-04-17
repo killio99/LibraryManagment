@@ -25,7 +25,7 @@ public class User{
         fines = 0;
     }
 
-    public void saveToDB() {
+    public void saveNewToDB() {
         String checkUserSql = "SELECT COUNT(*) FROM Users WHERE username = ?";
         String insertUserSql = "INSERT INTO Users (username, password, fines) VALUES (?, ?, ?)";
     

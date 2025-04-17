@@ -12,18 +12,4 @@ public class Library{
         return MAX_CHECKOUTS;
     }
 
-    
-    public ArrayList<Book> getAllBooks(){
-        return Book.getAllBooks();
-    }
-
-    public void addUser(User user){
-        user.saveToDB();
-    }
-
-    //testing
-    public void addBook(Book book){
-        book.saveToDB();
-    }
-
 }
