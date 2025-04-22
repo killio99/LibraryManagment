@@ -9,9 +9,8 @@ public class User{
     private String password;
     private double fines;
     public ArrayList<String> borrowedBookTitles = new ArrayList<>();
-    private int booksBorrowed;
 
-    //private ArrayList<Book> reservedBooks = new ArrayList<Book>();
+    private ArrayList<Book> reservedBooks = new ArrayList<Book>();
 
 
 
@@ -20,14 +19,12 @@ public class User{
         username = u;
         password = p;
         fines = 0;
-        booksBorrowed = 0;
     }
 
     public User(String u, String p, double f){
         username = u;
         password = p;
         fines = f;
-        booksBorrowed = 0;
     }
 
     public void saveNewToDB() {
@@ -229,7 +226,7 @@ public class User{
             return false;
         }
         //if the user already has too many books borrowed
-        if (booksBorrowed >= Library.getMaxCheckouts()){
+        if (borrowedBookTitles.size() >= Library.getMaxCheckouts()){
             System.out.println("You have reached the maximum number of checkouts.");
             return false;
         }
@@ -251,8 +248,6 @@ public class User{
 
         borrowedBookTitles.add(b.getTitle());
         updateBorrowedBooksInDB(); //adds the book title to the user string of books
-        
-        booksBorrowed++; //increment books borrowed
 
 
         Transaction t = new Transaction(username, b.getTitle(), "checkout");
@@ -265,9 +260,13 @@ public class User{
 
 
     public void returnBook(Book b){
-        if (borrowedBooks.contains(b)){
-            borrowedBooks.remove(b);
+        if (borrowedBookTitles.contains(b.getTitle())){
+            borrowedBookTitles.remove(b.getTitle());
             b.returnBook();
+            b.updateCopiesInDB();
+            updateBorrowedBooksInDB();
+
+            Transaction t = new Transaction(username, b.getTitle(), "return");
             System.out.println("Returned: " + b.getTitle());
         }else{
             System.out.println("This book was not borrowed by the user.");
