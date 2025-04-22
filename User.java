@@ -267,6 +267,8 @@ public class User{
             updateBorrowedBooksInDB();
 
             Transaction t = new Transaction(username, b.getTitle(), "return");
+            t.saveToDB();
+            
             System.out.println("Returned: " + b.getTitle());
         }else{
             System.out.println("This book was not borrowed by the user.");
