@@ -68,7 +68,7 @@ public class Transaction {
             insertStmt.setString(1, username);
             insertStmt.setString(2, title);
             insertStmt.setString(3, status);
-            insertStmt.setDate(4, java.sql.Date.valueOf(date));
+            insertStmt.setDouble(4, date.toEpochDay());
             insertStmt.executeUpdate();
     
             System.out.println("Transaction saved to database");
