@@ -8,7 +8,7 @@ public class User{
     private String username;
     private String password;
     private double fines;
-    private ArrayList<String> borrowedBookTitles = new ArrayList<>();
+    public ArrayList<String> borrowedBookTitles = new ArrayList<>();
     private int booksBorrowed;
 
     //private ArrayList<Book> reservedBooks = new ArrayList<Book>();
