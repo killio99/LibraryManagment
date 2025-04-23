@@ -19,9 +19,8 @@ public class SchemaSetup {
             CREATE TABLE IF NOT EXISTS Users (
                 username TEXT UNIQUE,
                 password TEXT NOT NULL,
-                fines REAL DEFAULT 0.0
+                fines REAL DEFAULT 0.0,
                 borrowed_books TEXT DEFAULT '' -- Comma-separated list of borrowed book titles
-
             );
         """;
 
