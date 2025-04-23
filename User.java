@@ -284,6 +284,11 @@ public class User{
         }
     }
 
+    public String getBorrowedBooks(){
+        System.out.println(borrowedBookTitles.keySet().toString());
+        return borrowedBookTitles.keySet().toString();
+    }
+
     //Getters
     public String getUsername(){
         return username;
@@ -309,4 +314,6 @@ public class User{
         }
         System.out.println("Paid fines. REmianing balance: $" + fines);
     }
+
+
 }

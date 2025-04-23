@@ -5,23 +5,23 @@ public class libraryTest {
         //t.saveToDB();
         //System.out.println(Transaction.listTransactions());
 
-        Book book = Book.getBookFromDB("Book A");
+        
 
-        User jame = new User("jame", "p");
-        jame.checkout(book);
+        
 
 
         //This code works
-        /*
+        
         User testuser = new User("testuser1", "password123");
         testuser.saveNewToDB();
-        testuser.setFines(10.0);
-        testuser.updateFinesInDB();
 
-        testuser.payFines(5);
-        testuser.updateFinesInDB();
-        testuser.removeUserInDB();
-        */
+        Book a = new Book(45, "Author A", "Book A", 1);
+        
+        a.saveNewToDB();
+
+        testuser.checkout(a);
+        testuser.getBorrowedBooks();
+        
 
         //This code works
         /*

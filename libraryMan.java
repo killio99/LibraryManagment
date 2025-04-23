@@ -171,7 +171,7 @@ public class libraryMan{
                     System.out.println("Enter book title to return: ");
                     String returnBookTitle = scanner.nextLine();
                     Book returnBook = Book.getBookFromDB(returnBookTitle);
-                    if (returnBook != null && curUser.borrowedBookTitles.contains(returnBook.getTitle())){
+                    if (returnBook != null && curUser.borrowedBookTitles.keySet().contains(returnBook.getTitle())){
                         curUser.returnBook(returnBook);
                     }else {
                         System.out.println("This book was not borrowed");
