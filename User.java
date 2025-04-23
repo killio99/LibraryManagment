@@ -2,13 +2,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class User{
     private String username;
     private String password;
     private double fines;
-    private ArrayList<String> borrowedBookTitles = new ArrayList<>();
+    private Map<String, LocalDate> borrowedBookTitles = new HashMap<>(); 
+    //Map of book titles and due dates
+    //assigns a due date to each book title
     private int booksBorrowed;
 
     //private ArrayList<Book> reservedBooks = new ArrayList<Book>();
@@ -234,7 +239,7 @@ public class User{
             return false;
         }
         //if its already borrowed by the user
-        if (borrowedBookTitles.contains(b.getTitle())) {
+        if (borrowedBookTitles.containsKey(b.getTitle())) {
             System.out.println("Book is already borrowed: " + b.getTitle());
             return false;
         }
@@ -248,8 +253,9 @@ public class User{
         b.borrowBook(); //update book copies
         b.updateCopiesInDB(); //update book in database
 
+        LocalDate dueDate = LocalDate.now().plusDays(14); // Set due date to 14 days from now
 
-        borrowedBookTitles.add(b.getTitle());
+        borrowedBookTitles.put(b.getTitle(), dueDate);
         updateBorrowedBooksInDB(); //adds the book title to the user string of books
         
         booksBorrowed++; //increment books borrowed
@@ -258,41 +264,28 @@ public class User{
         Transaction t = new Transaction(username, b.getTitle(), "checkout");
         t.saveToDB(); //save transaction to database
 
-        System.out.println("Checked out: " + b.getTitle());
+        System.out.println("Checked out: " + b.getTitle() + " | Due: " + dueDate);
         return true; //successful checkout
 
     }
 
-
     public void returnBook(Book b){
-        if (borrowedBooks.contains(b)){
-            borrowedBooks.remove(b);
-            b.returnBook();
-            System.out.println("Returned: " + b.getTitle());
-        }else{
-            System.out.println("This book was not borrowed by the user.");
-        }
     }
 
     public void reserveBook(Book b){
-        if(!reservedBooks.contains(b)){
-            reservedBooks.add(b);
-            System.out.println("Reserved: " + b.getTitle());
-        }else {
-            System.out.println("Already reserved this book.");
-        }
     }
 
-    public void payFines(double amount){
-        if(amount <= 0){
-            System.out.println("Invalid payment amount.");
-        }
+    public void viewCheckoouts(){
+        //loops through every book checked out
+        for (String tlt : borrowedBookTitles.keySet()){
+            //finds the book object
+           Book curBk = Book.getBookFromDB(tlt);
+           
+           System.out.println(curBk.getID() + " | " + curBk.getTitle() + " | " + curBk.getAuthor() +
+            " | Due: " + borrowedBookTitles.get(tlt));
+            //gets the due date of the book in the hashmap
 
-        fines -= amount;
-        if (fines < 0){
-            fines = 0;
         }
-        System.out.println("Paid fines. REmianing balance: $" + fines);
     }
 
     //Getters
@@ -307,5 +300,17 @@ public class User{
     //set fines
     public void setFines(double amount){
         fines = amount;
+    }
+
+    public void payFines(double amount){
+        if(amount <= 0){
+            System.out.println("Invalid payment amount.");
+        }
+
+        fines -= amount;
+        if (fines < 0){
+            fines = 0;
+        }
+        System.out.println("Paid fines. REmianing balance: $" + fines);
     }
 }

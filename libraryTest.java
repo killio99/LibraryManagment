@@ -5,8 +5,11 @@ public class libraryTest {
         //t.saveToDB();
         //System.out.println(Transaction.listTransactions());
 
-        Book book = new Book(1, "Author A", "Book A", 5);
-        book.saveNewToDB();
+        Book book = Book.getBookFromDB("Book A");
+
+        User jame = new User("jame", "p");
+        jame.checkout(book);
+
 
         //This code works
         /*

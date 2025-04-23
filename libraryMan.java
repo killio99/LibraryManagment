@@ -103,11 +103,13 @@ public class libraryMan{
                     //checkout book
                 case 2:
                     //return book
+                    
                 case 3:
                     //reserve book
                     break;
                 case 4:
                     //view checkouts
+                    User.
                     break;
                 case 5:
                     //lookup book details
