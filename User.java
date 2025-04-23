@@ -90,11 +90,12 @@ public class User{
         try (Connection conn = DBHelper.connect();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
+            // Convert the borrowedBookTitles map to a comma-separated string
             StringBuilder sb = new StringBuilder();
-            for (String title : borrowedBookTitles) {
+            for (String title : borrowedBookTitles.keySet()) {
                 sb.append(title).append(",");
             }
-            // Remove the last comma
+            // Remove the trailing comma
             if (sb.length() > 0) {
                 sb.setLength(sb.length() - 1);
             }
@@ -109,6 +110,7 @@ public class User{
             System.out.println("Failed to update user borrowed books:");
             e.printStackTrace();
         }
+        
     }
     public void removeUserInDB(){
         String sql = "DELETE FROM Users WHERE username = ?";

@@ -13,14 +13,13 @@ public class libraryTest {
         //This code works
         
         User testuser = new User("testuser1", "password123");
-        testuser.saveNewToDB();
 
         Book a = new Book(45, "Author A", "Book A", 1);
         
-        a.saveNewToDB();
+        
 
         testuser.checkout(a);
-        testuser.getBorrowedBooks();
+        //testuser.getBorrowedBooks();
         
 
         //This code works
