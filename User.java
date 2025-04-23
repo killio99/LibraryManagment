@@ -16,7 +16,7 @@ public class User{
     //assigns a due date to each book title
     private int booksBorrowed;
 
-    //private ArrayList<Book> reservedBooks = new ArrayList<Book>();
+    private ArrayList<Book> reservedBooks = new ArrayList<Book>();
 
 
 
@@ -25,14 +25,12 @@ public class User{
         username = u;
         password = p;
         fines = 0;
-        booksBorrowed = 0;
     }
 
     public User(String u, String p, double f){
         username = u;
         password = p;
         fines = f;
-        booksBorrowed = 0;
     }
 
     public void saveNewToDB() {
@@ -234,7 +232,7 @@ public class User{
             return false;
         }
         //if the user already has too many books borrowed
-        if (booksBorrowed >= Library.getMaxCheckouts()){
+        if (borrowedBookTitles.size() >= Library.getMaxCheckouts()){
             System.out.println("You have reached the maximum number of checkouts.");
             return false;
         }
@@ -257,8 +255,6 @@ public class User{
 
         borrowedBookTitles.put(b.getTitle(), dueDate);
         updateBorrowedBooksInDB(); //adds the book title to the user string of books
-        
-        booksBorrowed++; //increment books borrowed
 
 
         Transaction t = new Transaction(username, b.getTitle(), "checkout");

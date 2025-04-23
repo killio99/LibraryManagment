@@ -71,7 +71,7 @@ public class Transaction {
             insertStmt.setDouble(4, date.toEpochDay());
             insertStmt.executeUpdate();
     
-            System.out.println("Transaction saved to databas");
+            System.out.println("Transaction saved to database");
     
         } catch (Exception e) {
             System.out.println("Failed to save Transaction");
@@ -80,5 +80,9 @@ public class Transaction {
 
     }
 
+        //get how many days ago this transaction happened
+    public long daysSinceTransaction(){
+        return ChronoUnit.DAYS.between(date, LocalDate.now());
+    }
 
 }
