@@ -15,7 +15,6 @@ public class Book{
         this.author = author;
         this.title = title;
         this.copies = copies;
-        System.out.println("In book constructor: ");
         saveNewToDB(); // Save the book to the database when created
     }
 
@@ -158,6 +157,8 @@ public class Book{
                     rs.getString("title"),
                     rs.getInt("available_copies")
                 );
+
+
             } else {
                 System.out.println("Book not found: " + title);
             }

@@ -14,9 +14,9 @@ public class libraryTest {
         User testuser = User.getUserFromDB("testuser");
 
         //ASSINGING BOOK TO AN OBJECT
-        //fix that it calls the construcor and saves to db when assigning
-        Book book1 = Book.getBookFromDB("Book A");
-
+        //beware, this increments the copies available in the db
+        //Book book1 = Book.getBookFromDB("Book A");
+        Book book2 = new Book(45, "Author A", "Book A", 1);
 
         //Book a = new Book(45, "Author A", "Book A", 1);
         
