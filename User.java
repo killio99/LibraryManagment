@@ -90,34 +90,38 @@ public class User{
         }
     }
 
-    //adds a book title to the user string of books
-    public void updateBorrowedBooksInDB(){
-        String sql = "UPDATE Users SET borrowed_books = ? WHERE username = ?";
-
+    
+    public void updateBorrowedBooksInDB() {
+        // This method updates the ActiveLoans table in the database for the user
+        // It deletes all existing records for the user and re-inserts the current state of borrowedBookTitles
+        String deleteSql = "DELETE FROM ActiveLoans WHERE username = ?";
+        String insertSql = "INSERT INTO ActiveLoans (username, isbn, due_date) VALUES (?, ?, ?)";
+    
         try (Connection conn = DBHelper.connect();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            // Convert the borrowedBookTitles map to a comma-separated string
-            StringBuilder sb = new StringBuilder();
-            for (String title : borrowedBookTitles.keySet()) {
-                sb.append(title).append(",");
+             PreparedStatement deleteStmt = conn.prepareStatement(deleteSql);
+             PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+    
+            // Step 1: Delete all existing records for the user
+            deleteStmt.setString(1, username);
+            deleteStmt.executeUpdate();
+    
+            // Step 2: Re-insert the current state of borrowedBookTitles
+            for (Map.Entry<String, LocalDate> entry : borrowedBookTitles.entrySet()) {
+                String bookTitle = entry.getKey();
+                LocalDate dueDate = entry.getValue();
+    
+                insertStmt.setString(1, username);
+                insertStmt.setString(2, bookTitle);
+                insertStmt.setObject(3, dueDate); // Use setObject for LocalDate
+                insertStmt.executeUpdate();
             }
-            // Remove the trailing comma
-            if (sb.length() > 0) {
-                sb.setLength(sb.length() - 1);
-            }
-
-            pstmt.setString(1, sb.toString());
-            pstmt.setString(2, username);
-            pstmt.executeUpdate();
-
-            System.out.println("User borrowed books updated in database: " + username);
-
+    
+            System.out.println("Borrowed books updated in database for user: " + username);
+    
         } catch (Exception e) {
-            System.out.println("Failed to update user borrowed books:");
+            System.out.println("Failed to update borrowed books in database:");
             e.printStackTrace();
         }
-        
     }
     
     public void removeUserInDB(){
@@ -264,7 +268,7 @@ public class User{
         LocalDate dueDate = LocalDate.now().plusDays(14); // Set due date to 14 days from now
 
         borrowedBookTitles.put(b.getTitle(), dueDate);
-        updateBorrowedBooksInDB(); //adds the book title to the user string of books
+        updateBorrowedBooksInDB(); //adds the book title to the user key in ActiveLoans table
 
 
         Transaction t = new Transaction(username, b.getTitle(), "checkout");

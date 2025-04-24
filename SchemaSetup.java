@@ -34,7 +34,6 @@ public class SchemaSetup {
 
         String createActiveLoans = """
             CREATE TABLE IF NOT EXISTS ActiveLoans (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL,
                 isbn TEXT NOT NULL,
                 due_date DATE NOT NULL,

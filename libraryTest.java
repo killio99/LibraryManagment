@@ -11,15 +11,13 @@ public class libraryTest {
         
         //LOGGING IN LOGIC
         //fix that it calls the construcor and saves to db when assigning
-        User testuser = User.getUserFromDB("testuser");
+        User testuser = User.getUserFromDB("tester");
 
         //ASSINGING BOOK TO AN OBJECT
-        //beware, this increments the copies available in the db
         //Book book1 = Book.getBookFromDB("Book A");
-        Book book2 = new Book(45, "Author A", "Book A", 1);
+        Book book1 = Book.getBookFromDB("Book A");
 
-        //Book a = new Book(45, "Author A", "Book A", 1);
-        
+        testuser.checkout(book1);
 
         //testuser.checkout(a);
         //testuser.getBorrowedBooks();
