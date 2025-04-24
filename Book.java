@@ -15,6 +15,8 @@ public class Book{
         this.author = author;
         this.title = title;
         this.copies = copies;
+
+        saveNewToDB(); // Save the book to the database when created
     }
 
     //Setters
@@ -32,6 +34,7 @@ public class Book{
 
     public void setAvailable(int copies){
         this.copies = copies;
+        updateCopiesInDB(); // Update the number of copies in the database
     }
 
     //getters    
@@ -54,6 +57,7 @@ public class Book{
     public boolean borrowBook(){
         if(copies > 0){
             copies --;
+            updateCopiesInDB();
             return true;
         }
         return false;
@@ -61,13 +65,14 @@ public class Book{
 
     public void returnBook(){
         copies++;
+        updateCopiesInDB();
     }
 
     public boolean isAvailable(){
         return copies > 0;
     }
 
-    public void saveNewToDB() {
+    private void saveNewToDB() {
         String checkBookSql = "SELECT COUNT(*) FROM Books WHERE isbn = ?";
         String insertBookSql = "INSERT INTO Books (isbn, author, title, available_copies) VALUES (?, ?, ?, ?)";
     
@@ -99,7 +104,7 @@ public class Book{
         }
     }
     //update copies in databse
-    public void updateCopiesInDB() {
+    private void updateCopiesInDB() {
 
         String sql = "UPDATE Books SET available_copies = ? WHERE isbn = ?";
     

@@ -25,15 +25,21 @@ public class User{
         username = u;
         password = p;
         fines = 0;
+        saveNewToDB(); // Save the new user to the database
     }
 
     public User(String u, String p, double f){
         username = u;
         password = p;
         fines = f;
+        saveNewToDB(); // Save the new user to the database
+    }
+    public void setFines(double amount){
+        fines = amount;
+        updateFinesInDB(); // Update the fines in the database
     }
 
-    public void saveNewToDB() {
+    private void saveNewToDB() {
         String checkUserSql = "SELECT COUNT(*) FROM Users WHERE username = ?";
         String insertUserSql = "INSERT INTO Users (username, password, fines) VALUES (?, ?, ?)";
     
@@ -66,7 +72,7 @@ public class User{
         }
     }
 
-    public void updateFinesInDB(){
+    private void updateFinesInDB(){
         String sql = "UPDATE Users SET fines = ? WHERE username = ?";
 
         try (Connection conn = DBHelper.connect();
@@ -113,6 +119,7 @@ public class User{
         }
         
     }
+    
     public void removeUserInDB(){
         String sql = "DELETE FROM Users WHERE username = ?";
 
@@ -252,14 +259,14 @@ public class User{
         
         //checking out the book
         b.borrowBook(); //update book copies
-        b.updateCopiesInDB(); //update book in database
+        
 
         LocalDate dueDate = LocalDate.now().plusDays(14); // Set due date to 14 days from now
 
         borrowedBookTitles.put(b.getTitle(), dueDate);
         updateBorrowedBooksInDB(); //adds the book title to the user string of books
 
-
+        
         Transaction t = new Transaction(username, b.getTitle(), "checkout");
         t.saveToDB(); //save transaction to database
 
@@ -302,9 +309,7 @@ public class User{
     }
 
     //set fines
-    public void setFines(double amount){
-        fines = amount;
-    }
+    
 
     public void payFines(double amount){
         if(amount <= 0){
@@ -315,7 +320,8 @@ public class User{
         if (fines < 0){
             fines = 0;
         }
-        System.out.println("Paid fines. REmianing balance: $" + fines);
+        System.out.println("Paid fines. Remianing balance: $" + fines);
+        updateFinesInDB();
     }
 
 

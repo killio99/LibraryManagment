@@ -18,6 +18,7 @@ public class Transaction {
         this.title = title;
         this.status = status;
         this.date = date;
+        saveToDB(); // Save the transaction to the database when created
     }
 
     //auto entry
@@ -26,6 +27,7 @@ public class Transaction {
         this.title = title;
         this.status = status;
         this.date = LocalDate.now();
+        saveToDB(); // Save the transaction to the database when created
     }
 
     public static String listTransactions(){
@@ -57,7 +59,7 @@ public class Transaction {
         return sb.toString();
     }
 
-    public void saveToDB(){
+    private void saveToDB(){
         String insertUserSql = "INSERT INTO Transactions (username, title, status, date) VALUES (?, ?, ?, ?)";
     
         try (Connection conn = DBHelper.connect();
