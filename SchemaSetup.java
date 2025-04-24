@@ -19,8 +19,7 @@ public class SchemaSetup {
             CREATE TABLE IF NOT EXISTS Users (
                 username TEXT UNIQUE,
                 password TEXT NOT NULL,
-                fines REAL DEFAULT 0.0,
-                borrowed_books TEXT DEFAULT '' -- Comma-separated list of borrowed book titles
+                fines REAL DEFAULT 0.0
             );
         """;
 
@@ -33,12 +32,24 @@ public class SchemaSetup {
             );
         """;
 
+        String createActiveLoans = """
+            CREATE TABLE IF NOT EXISTS ActiveLoans (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL,
+                isbn TEXT NOT NULL,
+                due_date DATE NOT NULL,
+                FOREIGN KEY (username) REFERENCES Users(username),
+                FOREIGN KEY (isbn) REFERENCES Books(isbn)
+            );
+        """;
+
         try (Connection conn = DBHelper.connect(); Statement stmt = conn.createStatement()) {
             
             System.out.println("Creating new tables...");
             stmt.execute(createBooks);
             stmt.execute(createUsers);
             stmt.execute(createTransactions);
+            stmt.execute(createActiveLoans);
             System.out.println("✅ Tables created successfully.");
         } catch (Exception e) {
             e.printStackTrace();

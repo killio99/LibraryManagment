@@ -84,6 +84,7 @@ public class User{
         }
     }
 
+    //adds a book title to the user string of books
     public void updateBorrowedBooksInDB(){
         String sql = "UPDATE Users SET borrowed_books = ? WHERE username = ?";
 
