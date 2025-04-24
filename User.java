@@ -207,7 +207,7 @@ public class User{
         }
         return false;
     }
-
+    //used to assign a user from the db to a user object
     public static User getUserFromDB(String username){
 
         String sql = "SELECT * FROM Users WHERE username = ?";
@@ -266,9 +266,8 @@ public class User{
         borrowedBookTitles.put(b.getTitle(), dueDate);
         updateBorrowedBooksInDB(); //adds the book title to the user string of books
 
-        
+
         Transaction t = new Transaction(username, b.getTitle(), "checkout");
-        t.saveToDB(); //save transaction to database
 
         System.out.println("Checked out: " + b.getTitle() + " | Due: " + dueDate);
         return true; //successful checkout

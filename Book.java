@@ -15,7 +15,7 @@ public class Book{
         this.author = author;
         this.title = title;
         this.copies = copies;
-
+        System.out.println("In book constructor: ");
         saveNewToDB(); // Save the book to the database when created
     }
 
@@ -140,6 +140,7 @@ public class Book{
         }
     }
     
+    //Used to assign a book from the db to a book object
     public static Book getBookFromDB(String title) {
         String sql = "SELECT * FROM Books WHERE title = ?";
         Book book = null;
@@ -152,7 +153,7 @@ public class Book{
 
             if (rs.next()) {
                 book = new Book(
-                    rs.getInt("id"),
+                    rs.getInt("isbn"),
                     rs.getString("author"),
                     rs.getString("title"),
                     rs.getInt("available_copies")

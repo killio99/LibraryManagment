@@ -9,12 +9,19 @@ public class libraryTest {
 
         //This code works
         
-        User testuser = new User("testuser1", "password123");
-        Book a = new Book(45, "Author A", "Book A", 1);
-        
+        //LOGGING IN LOGIC
+        //fix that it calls the construcor and saves to db when assigning
+        User testuser = User.getUserFromDB("testuser");
+
+        //ASSINGING BOOK TO AN OBJECT
+        //fix that it calls the construcor and saves to db when assigning
+        Book book1 = Book.getBookFromDB("Book A");
+
+
+        //Book a = new Book(45, "Author A", "Book A", 1);
         
 
-        testuser.checkout(a);
+        //testuser.checkout(a);
         //testuser.getBorrowedBooks();
         
 

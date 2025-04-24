@@ -26,7 +26,6 @@ public class libraryMan{
                 String newPass = scanner.nextLine();
 
                 User newUserObj = new User(newUser, newPass);
-                newUserObj.saveNewToDB();
             }
             
             System.out.print("Login: ");
