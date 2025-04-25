@@ -25,7 +25,8 @@ public class libraryMan{
                 System.out.println("Enter a password: ");
                 String newPass = scanner.nextLine();
 
-                User newUserObj = new User(newUser, newPass);
+                User newUserObj = User.createUser(newUser, newPass);
+                //save to DB function prevents duplicate users
             }
             
             System.out.print("Login: ");
@@ -34,20 +35,7 @@ public class libraryMan{
             System.out.print("Password: ");
             String userPass = scanner.nextLine();
 
-            if (User.containsUserInDB(userLogin)){
-                if (User.checkPasswordInDB(userLogin, userPass)){
-                    //user exists and password matches
-                    curUser = User.getUserFromDB(userLogin);
-                    System.out.println("Welcome " + userLogin);
-                    logInLoop = false;
-                }
-                else{
-                    System.out.println();
-                    System.out.println("Incorrect Password");
-                }
-                
-            }
-            else if(userLogin.toLowerCase().equals("admin")){
+            if(userLogin.toLowerCase().equals("admin")){
                 //library admin
                 if (userPass.equals(adminPassword)){
                     System.out.println("Welcome Admin");
@@ -58,6 +46,21 @@ public class libraryMan{
                     System.out.println("Incorrect Admin Password");
                 }
             } 
+            else if (User.containsUserInDB(userLogin)){
+                if (User.checkPasswordInDB(userLogin, userPass)){
+                    //user exists and password matches
+                    //logging in
+                    curUser = User.getUserFromDB(userLogin);
+                    System.out.println("Welcome " + userLogin);
+                    logInLoop = false;
+                }
+                else{
+                    System.out.println();
+                    System.out.println("Incorrect Password");
+                }
+                
+            }
+            
             else{
             
                 System.out.println("No User found");
@@ -76,6 +79,7 @@ public class libraryMan{
                 System.out.println("3. Add new book to system");
                 System.out.println("4. Remove book from system");
                 System.out.println("5. Logout");
+
                 System.out.println("Enter your choice: ");
                 int choice = scanner.nextInt();
                 scanner.nextLine();
@@ -89,6 +93,8 @@ public class libraryMan{
                         System.out.println("Enter username to pay fines: ");
                         String userToPay = scanner.nextLine();
                         User userToPayObj = User.getUserFromDB(userToPay);
+                        //would be null if user does not exist
+
                         if (userToPayObj != null){
                             System.out.println("Enter amount to pay");
                             double payment = scanner.nextDouble();
@@ -108,8 +114,12 @@ public class libraryMan{
                         System.out.println("Enter number of copies: ");
                         int numCopies = scanner.nextInt();
 
-                        Book newBook = new Book(isbn, title, author, numCopies);
-                        newBook.saveNewToDB();
+                        Book newBook = Book.createBook(isbn, author, title, numCopies);
+                        if (newBook != null){
+                            System.out.println("Book added successfully");
+                        } else {
+                            System.out.println("Book already exists in the system");
+                        }
                         break;
                     
                     case 4:
@@ -138,89 +148,100 @@ public class libraryMan{
         }        
         else{
             boolean userMenuLoop = true;
+
             while(userMenuLoop){
-            System.out.println("1. Checkout book");
-            System.out.println("2: Return book");
-            System.out.println("3. Reserve book");
-            //viewing will show due dates too. add red color for overdue?
-            System.out.println("4. View checkouts");
-            System.out.println("5. Lookup book details");
-            System.out.println("6. Logout");
-            System.out.println("Enter you choice:");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-            
-            switch (choice){
-                case 1:
-                    System.out.println("Enter book title to checkout: ");
-                    String bookTitle = scanner.nextLine();
-                    Book book = Book.getBookFromDB(bookTitle);
-                    if (book == null){
-                        System.out.println("Book not found in system.");
-                        break;
-                    }else{
-                        boolean success = curUser.checkout(book);
-                        if(success){
-                            System.out.println("You have checked out " + book.getTitle() + " by " + book.getAuthor());
-                        }
-                    }
-                    break;
-                    //checkout book
-                case 2:
-                    System.out.println("Enter book title to return: ");
-                    String returnBookTitle = scanner.nextLine();
-                    Book returnBook = Book.getBookFromDB(returnBookTitle);
-                    if (returnBook != null && curUser.borrowedBookTitles.keySet().contains(returnBook.getTitle())){
-                        curUser.returnBook(returnBook);
-                    }else {
-                        System.out.println("This book was not borrowed");
-                    }
-                    break;
-                    //return book
-                    
-                case 3:
-                    System.out.println("Enter book title to reserve: ");
-                    String reserveBookTitle = scanner.nextLine();
-                    Book reserveBook = Book.getBookFromDB(reserveBookTitle);
-                    if(reserveBook != null){
-                        curUser.reserveBook(reserveBook);
-                    }else{
-                        System.out.println("Book not found");
-                    }
-                    break;
-                    //reserve book
-                case 4:
-                    System.out.println("Your borrowed books: ");
-                    for(String borrowedBook : curUser.borrowedBookTitles){
-                        System.out.println(borrowedBook);
-                    }
-                    break;
-                    //view checkouts
-                case 5:
-                    System.out.println("Enter book title to lookup: ");
-                    String lookupTitle = scanner.nextLine();
-                    Book lookupBook = Book.getBookFromDB(lookupTitle);
-                    if(lookupBook != null){
-                        System.out.println("Book details: ");
-                        System.out.println("Title: " + lookupBook.getTitle());
-                        System.out.println("Author: " + lookupBook.getAuthor());
-                        System.out.println("Available copies: " + lookupBook.getCopiesAvailable());
-                    }else {
-                        System.out.println("Book not found");
-                    }
-                    break;
-                    //lookup book details
-                case 6:
-                    System.out.println("Logging out...");
-                    userMenuLoop = false;
-                    break;
+                System.out.println("1. Checkout book");
+                System.out.println("2: Return book");
+                System.out.println("3. Reserve book");
+                //viewing will show due dates too. add red color for overdue?
+                System.out.println("4. View checkouts");
+                System.out.println("5. View reserves");
+                System.out.println("6. Lookup book details");
+                System.out.println("7. Logout");
+                System.out.println("Enter you choice:");
+                int choice = scanner.nextInt();
+                scanner.nextLine();
                 
-                default:
-                    System.out.println("Invalid choice");
-                    break;      
+                switch (choice){
+                    case 1:
+                        System.out.println("Enter book title to checkout: ");
+                        String bookTitle = scanner.nextLine();
+                        Book book = Book.getBookFromDB(bookTitle);
+
+                        if (book == null){
+                            System.out.println("Book not found in system.");
+                            break;
+                        }else{
+                            boolean success = curUser.checkout(book);
+                            if(success){
+                                System.out.println("You have checked out " + book.getTitle() + " by " + book.getAuthor());
+                            }
+                        }
+                        break;
+                        //checkout book
+                    case 2:
+                        System.out.println("Enter book title to return: ");
+                        String returnBookTitle = scanner.nextLine();
+                        Book returnBook = Book.getBookFromDB(returnBookTitle);
+                        //returnBook confirms the user has it checkout out
+                        if (returnBook != null){
+                            curUser.returnBook(returnBook);
+                        }else {
+                            System.out.println("This book was not borrowed");
+                        }
+                        break;
+                        //return book
+                        
+                    case 3:
+                        //reserve book
+                        /*
+                        System.out.println("Enter book title to reserve: ");
+                        String reserveBookTitle = scanner.nextLine();
+                        Book reserveBook = Book.getBookFromDB(reserveBookTitle);
+                        if(reserveBook != null){
+                            curUser.reserveBook(reserveBook);
+                        }else{
+                            System.out.println("Book not found");
+                        }
+                        break;
+                        */
+                        //reserve book
+                    case 4:
+                        //view checkouts
+                        System.out.println("Your borrowed books: ");
+                        curUser.viewBorrowedBooks();
+                        break;
+                        
+                    case 5:
+                        //view reserves
+                        System.out.println("Your reserved books: ");
+                        //curUser.viewReservedBooks();
+                        break;
+                    case 6:
+                        System.out.println("Enter book title to lookup: ");
+                        String lookupTitle = scanner.nextLine();
+                        Book lookupBook = Book.getBookFromDB(lookupTitle);
+                        if(lookupBook != null){
+                            System.out.println("Book details: ");
+                            System.out.println("Title: " + lookupBook.getTitle());
+                            System.out.println("Author: " + lookupBook.getAuthor());
+                            System.out.println("Available copies: " + lookupBook.getCopiesAvailable());
+                        }else {
+                            System.out.println("Book not found");
+                        }
+                        break;
+                        //lookup book details
+                    case 7:
+                        System.out.println("Logging out...");
+                        userMenuLoop = false;
+                        break;
+                    
+                    default:
+                        System.out.println("Invalid choice");
+                        break;      
+                }
+            }
         }
-        }
+        scanner.close();
     }
-    scanner.close();
-}
 }

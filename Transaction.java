@@ -32,8 +32,7 @@ public class Transaction {
 
     public static String listTransactions(){
         StringBuilder sb = new StringBuilder();
-        String sql = "SELECT * FROM Transactions";
-
+        String sql = "SELECT username, title, status, date FROM Transactions";
         try (Connection conn = DBHelper.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
@@ -42,13 +41,10 @@ public class Transaction {
                 String username = rs.getString("username");
                 String title = rs.getString("title");
                 String status = rs.getString("status");
-                LocalDate date = rs.getDate("date").toLocalDate();
+                String dateString = rs.getString("date"); // Retrieve the date as a string
+                LocalDate date = LocalDate.parse(dateString); // Parse the date
 
-                sb.append("User: ").append(username)
-
-                  .append(", Book: ").append(title)
-                  .append(", Status: ").append(status)
-                  .append(", Date: ").append(date).append("\n");
+                System.out.println("User: " + username + ", Book: " + title + ", Status: " + status + ", Date: " + date);
             }
 
         } catch (Exception e) {

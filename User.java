@@ -21,6 +21,7 @@ public class User{
     public static User createUser(String u, String p){
         User newUser = new User(u, p); // Create a new user object
         newUser.saveNewToDB();
+        
         return newUser; // Return the new user object
     }
 
