@@ -10,26 +10,22 @@ public class Book{
     private int copies;
 
     //Constructor
+    //used for creating a new book
+    public static Book createBook(int id, String author, String title, int copies) {
+        Book newBook = new Book(id, author, title, copies);
+        newBook.saveNewToDB(); // Save the book to the database when created
+        return newBook;
+    }
+
+    //used for logging in and assigning a book to an object
     public Book(int id, String author, String title, int copies){
         this.id = id;
         this.author = author;
         this.title = title;
         this.copies = copies;
-        saveNewToDB(); // Save the book to the database when created
     }
 
     //Setters
-    public void setId(int id){
-        this.id = id;
-    }
-
-    public void setAuthor(String author){
-        this.author = author;
-    }
-
-    public void setTitle(String title){
-        this.title = title;
-    }
 
     public void setAvailable(int copies){
         this.copies = copies;
@@ -87,6 +83,7 @@ public class Book{
     
             if (count > 0) {
                 System.out.println("Book already exists in the database: " + title);
+                //increment book?
             } else {
                 // Insert the new book
                 insertStmt.setInt(1, id);

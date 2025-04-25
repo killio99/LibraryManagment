@@ -18,22 +18,26 @@ public class User{
 
     private ArrayList<Book> reservedBooks = new ArrayList<Book>();
 
+    public static User createUser(String u, String p){
+        User newUser = new User(u, p); // Create a new user object
+        newUser.saveNewToDB();
+        return newUser; // Return the new user object
+    }
 
-
-    //for new user
+    //called on a new user creation, and to load a user from getUserFromDB
     public User(String u, String p){
         username = u;
         password = p;
         fines = 0;
-        saveNewToDB(); // Save the new user to the database
-        
+        //wouldnt load any for a new user call on the constructor
+        loadBorrowedBooksFromDB(); // Load borrowed books from the database
     }
 
     public User(String u, String p, double f){
         username = u;
         password = p;
         fines = f;
-        saveNewToDB(); // Save the new user to the database
+        loadBorrowedBooksFromDB();
         //load borrowed books from DB into the map
     }
     public void setFines(double amount){
@@ -47,6 +51,11 @@ public class User{
     //also make a create function, which calls the constructor, and calls saveNewToDB
     //That way, when we "log in" a user, which has to use the constructor, it doesn't call saveNewToDB
     //do the same for the book class
+
+    
+
+
+
     private void saveNewToDB() {
         String checkUserSql = "SELECT COUNT(*) FROM Users WHERE username = ?";
         String insertUserSql = "INSERT INTO Users (username, password, fines) VALUES (?, ?, ?)";
@@ -62,6 +71,7 @@ public class User{
             int count = rs.getInt(1);
     
             if (count > 0) {
+                //prevents duplicate users from being created
                 System.out.println("User already exists in the database: " + username);
                 return; // Exit the method without inserting
             }
@@ -98,7 +108,32 @@ public class User{
         }
     }
 
+    public void loadBorrowedBooksFromDB() {
+        // This method loads the borrowed books from the database into the borrowedBookTitles map
+        String sql = "SELECT * FROM ActiveLoans WHERE username = ?";
     
+        try (Connection conn = DBHelper.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            borrowedBookTitles.clear(); // Clear the map before loading
+    
+            while (rs.next()) {
+                String bookTitle = rs.getString("isbn");
+                String dueDateString = rs.getString("due_date"); // Get the date as a string
+                LocalDate dueDate = LocalDate.parse(dueDateString); // Parse the date
+                borrowedBookTitles.put(bookTitle, dueDate); // Add to the map
+            }
+
+            System.out.println("books loaded for user: " + username);
+    
+        } catch (Exception e) {
+            System.out.println("Failed to load borrowed books from database:");
+            e.printStackTrace();
+        }
+    }
     public void updateBorrowedBooksInDB() {
         // This method updates the ActiveLoans table in the database for the user
         // It deletes all existing records for the user and re-inserts the current state of borrowedBookTitles
@@ -221,8 +256,8 @@ public class User{
     }
     //used to assign a user from the db to a user object
     public static User getUserFromDB(String username){
-
         String sql = "SELECT * FROM Users WHERE username = ?";
+        User user = null;
 
         try (Connection conn = DBHelper.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -231,20 +266,20 @@ public class User{
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                String user = rs.getString("username");
-                String pass = rs.getString("password");
-                double fines = rs.getDouble("fines");
-
-                return new User(user, pass, fines); // Return the user object
+                user = new User(
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getDouble("fines")
+                );
             } else {
-                System.out.println("User does not exist in the database: " + username);
+                System.out.println("User not found: " + username);
             }
 
         } catch (Exception e) {
             System.out.println("Failed to retrieve user from database:");
             e.printStackTrace();
         }
-        return null;
+        return user;
     }
     
     public boolean checkout(Book b){
@@ -301,7 +336,7 @@ public class User{
             System.out.println("Fines added: $" + (daysOverdue * Library.getFinesPerDay()));
         }
 
-        //returning the book
+        //increments copies in the book object
         b.returnBook();
 
         borrowedBookTitles.remove(b.getTitle()); //remove the book from the user
@@ -314,10 +349,11 @@ public class User{
     public void reserveBook(Book b){
     }
 
-    public void viewCheckoouts(){
+    public void viewBorrowedBooks(){
         //loops through every book checked out
         for (String tlt : borrowedBookTitles.keySet()){
-            //finds the book object
+            //finds the book object given the title stored with the user
+            //this is used to get the book details from the database
            Book curBk = Book.getBookFromDB(tlt);
            
            System.out.println(curBk.getID() + " | " + curBk.getTitle() + " | " + curBk.getAuthor() +
@@ -325,11 +361,6 @@ public class User{
             //gets the due date of the book in the hashmap
 
         }
-    }
-
-    public String getBorrowedBooks(){
-        System.out.println(borrowedBookTitles.keySet().toString());
-        return borrowedBookTitles.keySet().toString();
     }
 
     //Getters

@@ -70,7 +70,7 @@ public class Transaction {
             insertStmt.setString(1, username);
             insertStmt.setString(2, title);
             insertStmt.setString(3, status);
-            insertStmt.setDouble(4, date.toEpochDay());
+            insertStmt.setString(4, LocalDate.now().toString()); // Use LocalDate's toString() method to get the date in the correct format
             insertStmt.executeUpdate();
     
             System.out.println("Transaction saved to database");
