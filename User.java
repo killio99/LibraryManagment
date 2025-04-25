@@ -284,6 +284,10 @@ public class User{
     
     public boolean checkout(Book b){
         //if the user has overdue fines
+        if (b == null){
+            System.out.println("Book is null.");
+            return false;
+        }
         if (fines > 0){
             System.out.println("You have overdue fines. Please pay them before borrowing books.");
             return false;
@@ -322,6 +326,10 @@ public class User{
     }
 
     public void returnBook(Book b){
+        if (b == null){
+            System.out.println("Book is null.");
+            return;
+        }
         if (!borrowedBookTitles.containsKey(b.getTitle())){
             System.out.println("Book not borrowed: " + b.getTitle());
             return;
