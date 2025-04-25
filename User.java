@@ -26,6 +26,7 @@ public class User{
         password = p;
         fines = 0;
         saveNewToDB(); // Save the new user to the database
+        
     }
 
     public User(String u, String p, double f){
@@ -33,12 +34,19 @@ public class User{
         password = p;
         fines = f;
         saveNewToDB(); // Save the new user to the database
+        //load borrowed books from DB into the map
     }
     public void setFines(double amount){
         fines = amount;
         updateFinesInDB(); // Update the fines in the database
     }
-
+    //for user and book, create a loadfromDB function to load the user into a user object
+    //and the book into a book object.
+    //this will be used to load the user from the database when they log in
+    
+    //also make a create function, which calls the constructor, and calls saveNewToDB
+    //That way, when we "log in" a user, which has to use the constructor, it doesn't call saveNewToDB
+    //do the same for the book class
     private void saveNewToDB() {
         String checkUserSql = "SELECT COUNT(*) FROM Users WHERE username = ?";
         String insertUserSql = "INSERT INTO Users (username, password, fines) VALUES (?, ?, ?)";
@@ -279,6 +287,28 @@ public class User{
     }
 
     public void returnBook(Book b){
+        if (!borrowedBookTitles.containsKey(b.getTitle())){
+            System.out.println("Book not borrowed: " + b.getTitle());
+            return;
+        }
+
+        //if the book is overdue, add fines
+        if (LocalDate.now().isAfter(borrowedBookTitles.get(b.getTitle()))){
+            System.out.println("Book is overdue: " + b.getTitle());
+            //add fines to user
+            long daysOverdue = LocalDate.now().toEpochDay() - borrowedBookTitles.get(b.getTitle()).toEpochDay();
+            fines += daysOverdue * Library.getFinesPerDay(); //add fine for each day overdue
+            System.out.println("Fines added: $" + (daysOverdue * Library.getFinesPerDay()));
+        }
+
+        //returning the book
+        b.returnBook();
+
+        borrowedBookTitles.remove(b.getTitle()); //remove the book from the user
+        updateBorrowedBooksInDB(); //update the ActiveLoans table in the database
+        Transaction t = new Transaction(username, b.getTitle(), "return");
+        //creates a transaction for the return of the book
+        System.out.println("Returned: " + b.getTitle());
     }
 
     public void reserveBook(Book b){
