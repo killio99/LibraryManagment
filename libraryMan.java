@@ -51,6 +51,7 @@ public class libraryMan{
                     //user exists and password matches
                     //logging in
                     curUser = User.getUserFromDB(userLogin);
+                    System.out.println();
                     System.out.println("Welcome " + userLogin);
                     logInLoop = false;
                 }
@@ -62,8 +63,9 @@ public class libraryMan{
             }
             
             else{
-            
+                System.out.println();
                 System.out.println("No User found");
+                
             }
         }
         //continues here
@@ -169,12 +171,16 @@ public class libraryMan{
                         Book book = Book.getBookFromDB(bookTitle);
 
                         if (book == null){
+                            System.out.println();
                             System.out.println("Book not found in system.");
+                            System.out.println();
                             break;
                         }else{
                             boolean success = curUser.checkout(book);
                             if(success){
+                                System.out.println();
                                 System.out.println("You have checked out " + book.getTitle() + " by " + book.getAuthor());
+                                System.out.println();
                             }
                         }
                         break;
@@ -187,7 +193,9 @@ public class libraryMan{
                         if (returnBook != null){
                             curUser.returnBook(returnBook);
                         }else {
+                            System.out.println();
                             System.out.println("This book was not borrowed");
+                            System.out.println();
                         }
                         break;
                         //return book
@@ -208,36 +216,50 @@ public class libraryMan{
                         //reserve book
                     case 4:
                         //view checkouts
+                        System.out.println();
                         System.out.println("Your borrowed books: ");
+                        System.out.println();
                         curUser.viewBorrowedBooks();
+                        System.out.println();
                         break;
                         
                     case 5:
                         //view reserves
+                        System.out.println();
                         System.out.println("Your reserved books: ");
+                        System.out.println();
                         //curUser.viewReservedBooks();
+                        System.out.println();
                         break;
                     case 6:
                         System.out.println("Enter book title to lookup: ");
                         String lookupTitle = scanner.nextLine();
                         Book lookupBook = Book.getBookFromDB(lookupTitle);
                         if(lookupBook != null){
+                            System.out.println();
                             System.out.println("Book details: ");
                             System.out.println("Title: " + lookupBook.getTitle());
                             System.out.println("Author: " + lookupBook.getAuthor());
                             System.out.println("Available copies: " + lookupBook.getCopiesAvailable());
+                            System.out.println();
                         }else {
+                            System.out.println();
                             System.out.println("Book not found");
+                            System.out.println();
                         }
                         break;
                         //lookup book details
                     case 7:
+                        System.out.println();
                         System.out.println("Logging out...");
+                        System.out.println();
                         userMenuLoop = false;
                         break;
                     
                     default:
+                        System.out.println();
                         System.out.println("Invalid choice");
+                        System.out.println();
                         break;      
                 }
             }
