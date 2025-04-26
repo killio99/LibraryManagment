@@ -69,7 +69,7 @@ public class Transaction {
             insertStmt.setString(4, LocalDate.now().toString()); // Use LocalDate's toString() method to get the date in the correct format
             insertStmt.executeUpdate();
     
-            System.out.println("Transaction saved to database");
+            //System.out.println("Transaction saved to database");
     
         } catch (Exception e) {
             System.out.println("Failed to save Transaction");

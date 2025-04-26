@@ -111,7 +111,7 @@ public class Book{
             pstmt.setInt(2, id);
             pstmt.executeUpdate();
     
-            System.out.println("Book copies updated in database: " + title);
+            //System.out.println("Book copies updated in database: " + title);
     
         } catch (Exception e) {
             System.out.println("Failed to update book copies:");
@@ -157,7 +157,7 @@ public class Book{
 
 
             } else {
-                System.out.println("Book not found: " + title);
+                System.out.println("Book not found in system: " + title);
             }
 
         } catch (Exception e) {

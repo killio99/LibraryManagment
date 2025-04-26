@@ -34,6 +34,7 @@ public class libraryMan{
             String userLogin = scanner.nextLine();
             System.out.print("Password: ");
             String userPass = scanner.nextLine();
+            System.out.println();
 
             if(userLogin.toLowerCase().equals("admin")){
                 //library admin
@@ -59,12 +60,6 @@ public class libraryMan{
                     System.out.println();
                     System.out.println("Incorrect Password");
                 }
-                
-            }
-            
-            else{
-                System.out.println();
-                System.out.println("No User found");
                 
             }
         }
@@ -109,6 +104,7 @@ public class libraryMan{
                     case 3:
                         System.out.println("Enter book ISBN: ");
                         int isbn = scanner.nextInt();
+                        scanner.nextLine(); // Consume the newline character left by nextInt()
                         System.out.println("Enter book title: ");
                         String title = scanner.nextLine();
                         System.out.println("Enter book author: ");
@@ -169,11 +165,8 @@ public class libraryMan{
                         System.out.println("Enter book title to checkout: ");
                         String bookTitle = scanner.nextLine();
                         Book book = Book.getBookFromDB(bookTitle);
-
+                        System.out.println();
                         if (book == null){
-                            System.out.println();
-                            System.out.println("Book not found in system.");
-                            System.out.println();
                             break;
                         }else{
                             boolean success = curUser.checkout(book);

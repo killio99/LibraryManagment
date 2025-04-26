@@ -128,7 +128,7 @@ public class User{
                 borrowedBookTitles.put(bookTitle, dueDate); // Add to the map
             }
 
-            System.out.println("books loaded for user: " + username);
+            //System.out.println("books loaded for user: " + username);
     
         } catch (Exception e) {
             System.out.println("Failed to load borrowed books from database:");
@@ -160,7 +160,7 @@ public class User{
                 insertStmt.executeUpdate();
             }
     
-            System.out.println("Borrowed books updated in database for user: " + username);
+            //System.out.println("Borrowed books updated in database for user: " + username);
     
         } catch (Exception e) {
             System.out.println("Failed to update borrowed books in database:");
