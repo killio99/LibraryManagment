@@ -103,8 +103,7 @@ public class libraryMan{
                     
                     case 3:
                         System.out.println("Enter book ISBN: ");
-                        int isbn = scanner.nextInt();
-                        scanner.nextLine(); // Consume the newline character left by nextInt()
+                        String isbn = scanner.nextLine();
                         System.out.println("Enter book title: ");
                         String title = scanner.nextLine();
                         System.out.println("Enter book author: ");
@@ -195,7 +194,7 @@ public class libraryMan{
                         
                     case 3:
                         //reserve book
-                        /*
+                        
                         System.out.println("Enter book title to reserve: ");
                         String reserveBookTitle = scanner.nextLine();
                         Book reserveBook = Book.getBookFromDB(reserveBookTitle);
@@ -205,7 +204,7 @@ public class libraryMan{
                             System.out.println("Book not found");
                         }
                         break;
-                        */
+                        
                         //reserve book
                     case 4:
                         //view checkouts
@@ -221,7 +220,7 @@ public class libraryMan{
                         System.out.println();
                         System.out.println("Your reserved books: ");
                         System.out.println();
-                        //curUser.viewReservedBooks();
+                        curUser.viewReservedBooks();
                         System.out.println();
                         break;
                     case 6:

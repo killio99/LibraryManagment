@@ -14,9 +14,7 @@ public class User{
     private Map<String, LocalDate> borrowedBookTitles = new HashMap<>(); 
     //Map of book titles and due dates
     //assigns a due date to each book title
-    private int booksBorrowed;
-
-    private ArrayList<Book> reservedBooks = new ArrayList<Book>();
+    private ArrayList<String> reservedBookTitles = new ArrayList<String>();
 
     public static User createUser(String u, String p){
         User newUser = new User(u, p); // Create a new user object
@@ -32,6 +30,7 @@ public class User{
         fines = 0;
         //wouldnt load any for a new user call on the constructor
         loadBorrowedBooksFromDB(); // Load borrowed books from the database
+        loadReservedBooksFromDB(); // Load reserved books from the database
     }
 
     public User(String u, String p, double f){
@@ -39,6 +38,7 @@ public class User{
         password = p;
         fines = f;
         loadBorrowedBooksFromDB();
+        loadReservedBooksFromDB();
         //load borrowed books from DB into the map
     }
     public void setFines(double amount){
@@ -122,7 +122,7 @@ public class User{
             borrowedBookTitles.clear(); // Clear the map before loading
     
             while (rs.next()) {
-                String bookTitle = rs.getString("isbn");
+                String bookTitle = rs.getString("title");
                 String dueDateString = rs.getString("due_date"); // Get the date as a string
                 LocalDate dueDate = LocalDate.parse(dueDateString); // Parse the date
                 borrowedBookTitles.put(bookTitle, dueDate); // Add to the map
@@ -139,7 +139,7 @@ public class User{
         // This method updates the ActiveLoans table in the database for the user
         // It deletes all existing records for the user and re-inserts the current state of borrowedBookTitles
         String deleteSql = "DELETE FROM ActiveLoans WHERE username = ?";
-        String insertSql = "INSERT INTO ActiveLoans (username, isbn, due_date) VALUES (?, ?, ?)";
+        String insertSql = "INSERT INTO ActiveLoans (username, title, due_date) VALUES (?, ?, ?)";
     
         try (Connection conn = DBHelper.connect();
              PreparedStatement deleteStmt = conn.prepareStatement(deleteSql);
@@ -355,9 +355,76 @@ public class User{
         System.out.println("Returned: " + b.getTitle());
     }
 
+
+
     public void reserveBook(Book b){
+        if (b == null){
+            System.out.println("Book is null.");
+            return;
+        }
+        if (reservedBookTitles.contains(b.getTitle())){
+            System.out.println("Book already reserved: " + b.getTitle());
+            return;
+        }
+        reservedBookTitles.add(b.getTitle()); //add the book to the reserved books list
+        Transaction t = new Transaction(username, b.getTitle(), "reserve");
+        System.out.println("Reserved: " + b.getTitle());
+        updateReservesInDB(); //update the ActiveReserves table in the database
     }
 
+    public void updateReservesInDB(){
+        // This method updates the ActiveReserves table in the database for the user
+        // It deletes all existing records for the user and re-inserts the current state of reservedBooks
+        String deleteSql = "DELETE FROM ActiveReserves WHERE username = ?";
+        String insertSql = "INSERT INTO ActiveReserves (username, title) VALUES (?, ?)";
+    
+        try (Connection conn = DBHelper.connect();
+             PreparedStatement deleteStmt = conn.prepareStatement(deleteSql);
+             PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+    
+            // Step 1: Delete all existing records for the user
+            deleteStmt.setString(1, username);
+            deleteStmt.executeUpdate();
+    
+            // Step 2: Re-insert the current state of reservedBooks
+            for (String bookTitle : reservedBookTitles) {
+                insertStmt.setString(1, username);
+                insertStmt.setString(2, bookTitle);
+                insertStmt.executeUpdate();
+            }
+    
+            System.out.println("Reserved books updated in database for user: " + username);
+    
+        } catch (Exception e) {
+            System.out.println("Failed to update reserved books in database:");
+            e.printStackTrace();
+        }
+    }
+    public void loadReservedBooksFromDB(){
+        // This method loads the reserved books from the database into the reservedBookTitles list
+        String sql = "SELECT * FROM ActiveReserves WHERE username = ?";
+    
+        try (Connection conn = DBHelper.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            reservedBookTitles.clear(); // Clear the list before loading
+    
+            while (rs.next()) {
+                String bookTitle = rs.getString("title");
+                System.out.println(bookTitle);
+                reservedBookTitles.add(bookTitle); // Add to the list
+            }
+
+            System.out.println("books loaded for user: " + username);
+    
+        } catch (Exception e) {
+            System.out.println("Failed to load reserved books from database:");
+            e.printStackTrace();
+        }
+    }
     public void viewBorrowedBooks(){
         //loops through every book checked out
         for (String tlt : borrowedBookTitles.keySet()){
@@ -365,13 +432,19 @@ public class User{
             //this is used to get the book details from the database
            Book curBk = Book.getBookFromDB(tlt);
            
-           System.out.println(curBk.getID() + " | " + curBk.getTitle() + " | " + curBk.getAuthor() +
+           System.out.println(curBk.getISBN() + " | " + curBk.getTitle() + " | " + curBk.getAuthor() +
             " | Due: " + borrowedBookTitles.get(tlt));
             //gets the due date of the book in the hashmap
 
         }
     }
 
+    public void viewReservedBooks(){
+        for (String title : reservedBookTitles){
+            Book curBk = Book.getBookFromDB(title);
+            System.out.println(curBk.getISBN() + " | " + curBk.getTitle() + " | " + curBk.getAuthor());
+        }
+    }
     //Getters
     public String getUsername(){
         return username;

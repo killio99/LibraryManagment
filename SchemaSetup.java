@@ -27,7 +27,7 @@ public class SchemaSetup {
             CREATE TABLE IF NOT EXISTS Transactions (
                 username TEXT,
                 title TEXT,
-                status TEXT CHECK(status IN ('checkout', 'return')),
+                status TEXT CHECK(status IN ('checkout', 'return', 'reserve')),
                 date DATE
             );
         """;
@@ -35,12 +35,22 @@ public class SchemaSetup {
         String createActiveLoans = """
             CREATE TABLE IF NOT EXISTS ActiveLoans (
                 username TEXT NOT NULL,
-                isbn TEXT NOT NULL,
+                title TEXT NOT NULL,
                 due_date DATE NOT NULL,
                 FOREIGN KEY (username) REFERENCES Users(username),
-                FOREIGN KEY (isbn) REFERENCES Books(isbn)
+                FOREIGN KEY (title) REFERENCES Books(title)
             );
         """;
+
+        String createActiveReserves = """
+            CREATE TABLE IF NOT EXISTS ActiveReserves (
+                username TEXT NOT NULL,
+                title TEXT NOT NULL,
+                FOREIGN KEY (username) REFERENCES Users(username),
+                FOREIGN KEY (title) REFERENCES Books(title)
+                );
+            """;
+            
 
         try (Connection conn = DBHelper.connect(); Statement stmt = conn.createStatement()) {
             
@@ -49,6 +59,7 @@ public class SchemaSetup {
             stmt.execute(createUsers);
             stmt.execute(createTransactions);
             stmt.execute(createActiveLoans);
+            stmt.execute(createActiveReserves);
             System.out.println("✅ Tables created successfully.");
         } catch (Exception e) {
             e.printStackTrace();

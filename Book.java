@@ -4,22 +4,22 @@ import java.util.List;
 import java.sql.*;
 
 public class Book{
-    private int id;
+    private String isbn;
     private String author;
     private String title;
     private int copies;
 
     //Constructor
     //used for creating a new book
-    public static Book createBook(int id, String author, String title, int copies) {
-        Book newBook = new Book(id, author, title, copies);
+    public static Book createBook(String isbn, String author, String title, int copies) {
+        Book newBook = new Book(isbn, author, title, copies);
         newBook.saveNewToDB(); // Save the book to the database when created
         return newBook;
     }
 
     //used for logging in and assigning a book to an object
-    public Book(int id, String author, String title, int copies){
-        this.id = id;
+    public Book(String isbn, String author, String title, int copies){
+        this.isbn = isbn;
         this.author = author;
         this.title = title;
         this.copies = copies;
@@ -33,8 +33,8 @@ public class Book{
     }
 
     //getters    
-    public int getID(){
-        return id;
+    public String getISBN(){
+        return isbn;
     }
 
     public String getAuthor(){
@@ -76,7 +76,7 @@ public class Book{
              PreparedStatement insertStmt = conn.prepareStatement(insertBookSql)) {
     
             // Check if the book already exists
-            checkStmt.setInt(1, id);
+            checkStmt.setString(1, isbn);
             ResultSet rs = checkStmt.executeQuery();
             rs.next(); // Move to the first row of the result set
             int count = rs.getInt(1);
@@ -86,7 +86,7 @@ public class Book{
                 //increment book?
             } else {
                 // Insert the new book
-                insertStmt.setInt(1, id);
+                insertStmt.setString(1, isbn);
                 insertStmt.setString(2, author);
                 insertStmt.setString(3, title);
                 insertStmt.setInt(4, copies);
@@ -108,7 +108,7 @@ public class Book{
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
     
             pstmt.setInt(1, copies);
-            pstmt.setInt(2, id);
+            pstmt.setString(2, isbn);
             pstmt.executeUpdate();
     
             //System.out.println("Book copies updated in database: " + title);
@@ -125,7 +125,7 @@ public class Book{
         try (Connection conn = DBHelper.connect();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
     
-            pstmt.setInt(1, id);
+            pstmt.setString(1, isbn);
             pstmt.executeUpdate();
     
             System.out.println("Book removed from database: " + title);
@@ -149,7 +149,7 @@ public class Book{
 
             if (rs.next()) {
                 book = new Book(
-                    rs.getInt("isbn"),
+                    rs.getString("isbn"),
                     rs.getString("author"),
                     rs.getString("title"),
                     rs.getInt("available_copies")
@@ -177,7 +177,7 @@ public class Book{
 
             while (rs.next()) {
                 Book book = new Book(
-                    rs.getInt("id"),
+                    rs.getString("isbn"),
                     rs.getString("author"),
                     rs.getString("title"),
                     rs.getInt("available_copies")
