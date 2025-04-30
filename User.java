@@ -101,7 +101,7 @@ public class User{
             pstmt.setString(2, username);
             pstmt.executeUpdate();
 
-            System.out.println("User fines updated in database: " + username);
+            //System.out.println("User fines updated in database: " + username);
 
         } catch (Exception e) {
             System.out.println("Failed to update user fines:");
