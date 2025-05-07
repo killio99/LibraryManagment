@@ -111,7 +111,8 @@ public class libraryMan{
                         System.out.println("Enter number of copies: ");
                         int numCopies = scanner.nextInt();
 
-                        Book newBook = Book.createBook(isbn, author, title, numCopies);
+                        Book newBook = Book.createBook(isbn, author, title, numCopies, "Killian and Ray's Library");
+                        //homeLibrary is hardcoded for now
                         if (newBook != null){
                             System.out.println("Book added successfully");
                         } else {
