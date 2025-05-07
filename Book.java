@@ -191,7 +191,7 @@ public class Book{
             }
 
         } catch (Exception e) {
-            System.out.println("❌ Failed to load books:");
+            System.out.println("Failed to load books:");
             e.printStackTrace();
         }
         return books;
