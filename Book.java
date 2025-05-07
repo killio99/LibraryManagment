@@ -8,21 +8,23 @@ public class Book{
     private String author;
     private String title;
     private int copies;
+    private String homeLibrary;
 
     //Constructor
     //used for creating a new book
-    public static Book createBook(String isbn, String author, String title, int copies) {
-        Book newBook = new Book(isbn, author, title, copies);
+    public static Book createBook(String isbn, String author, String title, int copies, String homeLibrary) {
+        Book newBook = new Book(isbn, author, title, copies, homeLibrary);
         newBook.saveNewToDB(); // Save the book to the database when created
         return newBook;
     }
 
     //used for logging in and assigning a book to an object
-    public Book(String isbn, String author, String title, int copies){
+    public Book(String isbn, String author, String title, int copies, String homeLibrary) {
         this.isbn = isbn;
         this.author = author;
         this.title = title;
         this.copies = copies;
+        this.homeLibrary = homeLibrary;
     }
 
     //Setters
@@ -69,7 +71,7 @@ public class Book{
 
     private void saveNewToDB() {
         String checkBookSql = "SELECT COUNT(*) FROM Books WHERE isbn = ?";
-        String insertBookSql = "INSERT INTO Books (isbn, author, title, available_copies) VALUES (?, ?, ?, ?)";
+        String insertBookSql = "INSERT INTO Books (isbn, author, title, available_copies, homeLibrary) VALUES (?, ?, ?, ?, ?)";
     
         try (Connection conn = DBHelper.connect();
              PreparedStatement checkStmt = conn.prepareStatement(checkBookSql);
@@ -90,6 +92,7 @@ public class Book{
                 insertStmt.setString(2, author);
                 insertStmt.setString(3, title);
                 insertStmt.setInt(4, copies);
+                insertStmt.setString(5, homeLibrary);
                 insertStmt.executeUpdate();
                 System.out.println("Book saved to database: " + title);
             }
@@ -152,7 +155,8 @@ public class Book{
                     rs.getString("isbn"),
                     rs.getString("author"),
                     rs.getString("title"),
-                    rs.getInt("available_copies")
+                    rs.getInt("available_copies"),
+                    rs.getString("homeLibrary")
                 );
 
 
@@ -180,7 +184,8 @@ public class Book{
                     rs.getString("isbn"),
                     rs.getString("author"),
                     rs.getString("title"),
-                    rs.getInt("available_copies")
+                    rs.getInt("available_copies"),
+                    rs.getString("homeLibrary")
                 );
                 books.add(book);
             }

@@ -11,7 +11,8 @@ public class SchemaSetup {
                 isbn TEXT UNIQUE,    
                 title TEXT NOT NULL,
                 author TEXT NOT NULL,
-                available_copies INTEGER
+                available_copies INTEGER,
+                homeLibrary TEXT NOT NULL
             );
         """;
 
